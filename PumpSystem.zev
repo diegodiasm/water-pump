@@ -1,0 +1,118 @@
+<Z-EVES-GUI-State version="1" index="77"><textItem location="gui::6" history="2"><zed-box location="gui::6">ACTUATOR ::= Enabled | Disabled</zed-box></textItem
+><textItem location="gui::7" history="3"><zed-box location="gui::7">LEVEL_SENSOR ::= Empty | Low | High | Full</zed-box></textItem
+><textItem location="gui::33" history="4"><zed-box location="gui::33">ULTRASONIC_SENSOR == &Nopf;</zed-box></textItem
+><textItem location="gui::14" history="5"><zed-box location="gui::14">STATUS ::= Updated | Outdated</zed-box></textItem
+><textItem location="gui::43" history="6"><zed-box location="gui::43">MODE ::= Refill | TimeSlots</zed-box></textItem
+><textItem location="gui::41" history="7"><zed-box location="gui::41">HH_MM == &Nopf; &cross; &Nopf;</zed-box></textItem
+><textItem location="gui::74" history="8"><zed-box location="gui::74">FLOW_SENSOR == &Nopf;</zed-box></textItem
+><textItem location="gui::15" history="9"><zed-box location="gui::15">ON_OFF ::= On | Off</zed-box></textItem
+><textItem location="gui::11" history="10"><axiomatic-box location="gui::11"><decl-part/>threshold: &Nopf;<ax-part/>  threshold = 25</axiomatic-box></textItem
+><textItem location="gui::8" history="11"><schema-box location="gui::8">STATE<decl-part/> automatic_activation: ON_OFF
+activation_time: <word style="roman"/>seq<word/> HH_MM
+sensor_state: STATUS
+ground_pump: ACTUATOR
+underground_pump: ACTUATOR
+top_tank: LEVEL_SENSOR
+ground_tank: LEVEL_SENSOR
+underground_flow: FLOW_SENSOR<ax-part/> ground_pump = Enabled &rArr; top_tank &neq; Full &wedge; ground_tank &neq; Empty
+underground_pump = Enabled &rArr; ground_tank &neq; Full</schema-box></textItem
+><textItem location="gui::39" history="12"><schema-box location="gui::39">POWER_ON_GROUND<decl-part/> &Delta;STATE<ax-part/> sensor_state = Updated
+ground_tank &neq; Low
+ground_pump' = Enabled
+sensor_state' = Outdated</schema-box></textItem
+><textItem location="gui::37" history="13"><schema-box location="gui::37">POWER_ON_GROUND_Pre<decl-part/> STATE<ax-part/> sensor_state = Updated
+ground_tank &neq; Empty
+ground_tank &neq; Low
+top_tank &neq; Full</schema-box></textItem
+><textItem location="gui::16" history="14"><theorem-def location="gui::16">Pre_POWER_ON_GROUND<ax-part/>   &forall; STATE
+| POWER_ON_GROUND_Pre &bullet; <word style="roman"/>pre<word/> POWER_ON_GROUND</theorem-def></textItem
+><textItem location="gui::24" history="15"><schema-box location="gui::24">POWER_ON_UNDERGROUND<decl-part/> &Delta;STATE<ax-part/> sensor_state = Updated
+ground_tank &neq; Full
+underground_pump' = Enabled
+sensor_state' = Outdated</schema-box></textItem
+><textItem location="gui::22" history="16"><schema-box location="gui::22">POWER_ON_UNDERGROUND_Pre<decl-part/> STATE<ax-part/> sensor_state = Updated
+ground_tank &neq; Full</schema-box></textItem
+><textItem location="gui::28" history="17"><theorem-def location="gui::28">Pre_POWER_ON_UNDERGROUND<ax-part/>   &forall; STATE | POWER_ON_UNDERGROUND_Pre &bullet; <word style="roman"/>pre<word/> POWER_ON_UNDERGROUND</theorem-def></textItem
+><textItem location="gui::12" history="18"><schema-box location="gui::12">POWER_OFF_GROUND<decl-part/> &Delta;STATE<ax-part/> ground_pump' = Disabled
+sensor_state' = Outdated</schema-box></textItem
+><textItem location="gui::67" history="19"><theorem-def location="gui::67">Pre_POWER_OFF_GROUND<ax-part/>      &forall; STATE | true&bullet; <word style="roman"/>pre<word/> POWER_OFF_GROUND</theorem-def></textItem
+><textItem location="gui::70" history="20"><schema-box location="gui::70">POWER_OFF_UNDERGROUND<decl-part/>  &Delta;STATE<ax-part/>  underground_pump' = Disabled
+sensor_state' = Outdated</schema-box></textItem
+><textItem location="gui::72" history="21"><theorem-def location="gui::72">Pre_POWER_OFF_UNDERGROUND<ax-part/>  &forall; STATE | true &bullet; <word style="roman"/>pre<word/> POWER_OFF_UNDERGROUND</theorem-def></textItem
+><textItem location="gui::23" history="22"><schema-box location="gui::23">UPDATE_SENSORS<decl-part/> &Delta;STATE
+top_tank?: LEVEL_SENSOR
+ground_tank?: LEVEL_SENSOR
+underground_flow?: FLOW_SENSOR<ax-part/> sensor_state = Updated
+top_tank' = top_tank?
+ground_tank' = ground_tank?
+underground_flow' = underground_flow?</schema-box></textItem
+><textItem location="gui::76" history="23"><theorem-def location="gui::76">Pre_UPDATE_SENSORS<ax-part/>      &forall; STATE | true &bullet; <word style="roman"/>pre<word/> UPDATE_SENSORS</theorem-def></textItem
+><textItem location="gui::29"><schema-box location="gui::29">UPDATE_CURRENT_FLOW<decl-part/> &Delta;STATE
+sensorReading!: &Nopf;<ax-part/> underground_flow' = sensorReading!</schema-box><schemadef><schname ident="UPDATE_CURRENT_FLOW" kind="schema"></schname><decpart><schname prefix="&Delta;" ident="STATE" kind="schema"></schname><decl><namelist><name ident="sensorReading!" kind="expr"></name></namelist><name ident="&Nopf;" kind="expr"></name></decl></decpart><axpart><relchain><name ident="underground_flow'" kind="expr"></name><name ident="=" class="inrel" kind="expr"></name><name ident="sensorReading!" kind="expr"></name></relchain></axpart></schemadef></textItem
+><textItem location="gui::31"><zed-box location="gui::31">UPDATE_SENSORS &eqhat; UPDATE_CURRENT_FLOW &fatsemi; UPDATE_SENSOR_STATE</zed-box><horschdef><schname ident="UPDATE_SENSORS" kind="schema"></schname><op kind="schema" type="inop"><name ident="&fatsemi;" class="other" kind="expr"></name><schname ident="UPDATE_CURRENT_FLOW" kind="schema"></schname><schname ident="UPDATE_SENSOR_STATE" kind="schema"></schname></op></horschdef></textItem
+><textItem location="gui::40"><schema-box location="gui::40">MAINTENCE<decl-part/>  &Delta;STATE
+flow_sensor?: &Nopf;
+aad?: ON_OFF
+<ax-part/>  automatic_activation' = aad?
+ underground_flow' = flow_sensor?</schema-box><schemadef><schname ident="MAINTENCE" kind="schema"></schname><decpart><schname prefix="&Delta;" ident="STATE" kind="schema"></schname><decl><namelist><name ident="flow_sensor?" kind="expr"></name></namelist><name ident="&Nopf;" kind="expr"></name></decl><decl><namelist><name ident="aad?" kind="expr"></name></namelist><name ident="ON_OFF" kind="expr"></name></decl></decpart><axpart><relchain><name ident="automatic_activation'" kind="expr"></name><name ident="=" class="inrel" kind="expr"></name><name ident="aad?" kind="expr"></name></relchain><relchain><name ident="underground_flow'" kind="expr"></name><name ident="=" class="inrel" kind="expr"></name><name ident="flow_sensor?" kind="expr"></name></relchain></axpart></schemadef></textItem
+><script name="Pre_POWER_ON_UNDERGROUND"><scriptItem number="2"><ztext>instantiate  ground_pump' == ground_pump,
+underground_flow' == underground_flow,
+top_tank' == top_tank,
+ground_tank' == ground_tank,
+automatic_activation' == automatic_activation,
+activation_time' == activation_time</ztext></scriptItem
+><scriptItem number="3"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="STATE$domainCheck"><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+></script
+><script name="Pre_UPDATE_SENSORS"><scriptItem><ztext>instantiate    ground_pump' == ground_pump,
+automatic_activation' == automatic_activation,
+activation_time' == activation_time, 
+underground_pump' == underground_pump</ztext><provercmd name="instantiate"><letdef><name ident="ground_pump'" kind="expr"></name><name ident="ground_pump" kind="expr"></name></letdef><letdef><name ident="automatic_activation'" kind="expr"></name><name ident="automatic_activation" kind="expr"></name></letdef><letdef><name ident="activation_time'" kind="expr"></name><name ident="activation_time" kind="expr"></name></letdef><letdef><name ident="underground_pump'" kind="expr"></name><name ident="underground_pump" kind="expr"></name></letdef></provercmd></scriptItem
+><scriptItem><ztext>prove by reduce</ztext><provercmd name="prove-by-reduce"></provercmd></scriptItem
+></script
+><script name="Expansion"><scriptItem><ztext>invoke OPV1</ztext><provercmd name="invoke"><name ident="OPV1" kind="expr"></name></provercmd></scriptItem
+><scriptItem><ztext>invoke &Delta;STATE</ztext><provercmd name="invoke"><schname prefix="&Delta;" ident="STATE" kind="schema"></schname></provercmd></scriptItem
+><scriptItem><ztext>invoke &Xi;LOCALOP_Sensor_State</ztext><provercmd name="invoke"><schname prefix="&Xi;" ident="LOCALOP_Sensor_State" kind="schema"></schname></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+><scriptItem><ztext>invoke LOCALOP_Sensor_State</ztext><provercmd name="invoke"><name ident="LOCALOP_Sensor_State" kind="expr"></name></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+><scriptItem><ztext>instantiate  sensor_state__0 == sensor_state'</ztext><provercmd name="instantiate"><letdef><name ident="sensor_state__0" kind="expr"></name><name ident="sensor_state'" kind="expr"></name></letdef></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+><scriptItem><ztext>invoke sensor_state'</ztext></scriptItem
+><scriptItem><ztext>invoke STATE</ztext><provercmd name="invoke"><name ident="STATE" kind="expr"></name></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+></script
+><script name="Pre_POWER_ON_GROUND"><scriptItem number="2"><ztext>instantiate   underground_pump' == underground_pump,
+underground_flow' == underground_flow,
+top_tank' == top_tank, 
+ground_tank' == ground_tank, 
+automatic_activation'== automatic_activation, 
+activation_time'==activation_time</ztext></scriptItem
+><scriptItem number="3"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="Pre_POWER_OFF_UNDERGROUND"><scriptItem number="2"><ztext>instantiate   ground_pump' == ground_pump,
+underground_flow' == underground_flow,
+top_tank' == top_tank,
+ground_tank' == ground_tank,
+automatic_activation' == automatic_activation,
+activation_time' == activation_time</ztext></scriptItem
+><scriptItem number="3"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="Pre_POWER_OFF_GROUND"><scriptItem number="2"><ztext>instantiate   underground_pump' == underground_pump,
+underground_flow' == underground_flow,
+top_tank' == top_tank,
+ground_tank' == ground_tank,
+automatic_activation' == automatic_activation,
+activation_time' == activation_time</ztext></scriptItem
+><scriptItem number="3"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="Equiv"><scriptItem><ztext>invoke POWER_ON_GROUNDv2</ztext><provercmd name="invoke"><name ident="POWER_ON_GROUNDv2" kind="expr"></name></provercmd></scriptItem
+><scriptItem><ztext>invoke POWER_ON_GROUND</ztext><provercmd name="invoke"><name ident="POWER_ON_GROUND" kind="expr"></name></provercmd></scriptItem
+><scriptItem><ztext>prove by reduce</ztext><provercmd name="prove-by-reduce"></provercmd></scriptItem
+><scriptItem><ztext>instantiate  ground_pump__0 == ground_pump</ztext><provercmd name="instantiate"><letdef><name ident="ground_pump__0" kind="expr"></name><name ident="ground_pump" kind="expr"></name></letdef></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+><scriptItem><ztext>instantiate   sensor_state__0 == Updated</ztext><provercmd name="instantiate"><letdef><name ident="sensor_state__0" kind="expr"></name><name ident="Updated" kind="expr"></name></letdef></provercmd></scriptItem
+><scriptItem><ztext>prove</ztext><provercmd name="prove-by-rewrite"></provercmd></scriptItem
+></script
+></Z-EVES-GUI-State>
